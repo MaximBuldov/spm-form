@@ -47,6 +47,29 @@
       name="keywords"
       content="long distance movers, heavy item movers, local movers, office movers, moving companies, movers San Francisco, moving companies San Francisco, cross country movers, moving services, appliance movers, hire movers, city movers, piano movers, relocation services, furniture movers, moving, small movers"
     />
+    <link rel="stylesheet" href="css/main.css" id="color-switcher-link" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/fonts.css" />
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"
+    ></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#menu').on('click', 'a', function (event) {
+          event.preventDefault();
+          var id = $(this).attr('href'),
+            top = $(id).offset().top;
+          $('body,html').animate(
+            {
+              scrollTop: top
+            },
+            1500
+          );
+        });
+      });
+    </script>
   </head>
   <body>
     <div class="icon-bar">
@@ -327,5 +350,7 @@
         </section>
       </div>
     </div>
+    <script src="js/compressed.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
