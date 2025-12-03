@@ -43,3 +43,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: build/
           dangerous-clean-slate: false
+          exclude: |
+            index.html
