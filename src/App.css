@@ -1,0 +1,4 @@
+.columns_margin_bottom_30 [class*='col-'],
+.row.columns_margin_bottom_30 [class*='col-'] {
+  margin-bottom: 30px;
+}

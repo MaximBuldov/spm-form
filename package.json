@@ -1,0 +1,63 @@
+{
+  "name": "spm-form",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@react-google-maps/api": "^2.20.7",
+    "@tanstack/react-query": "^5.90.11",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.22",
+    "axios": "^1.13.2",
+    "bootstrap": "^5.3.8",
+    "classnames": "^2.5.1",
+    "css-loader": "^7.1.2",
+    "dayjs": "^1.11.19",
+    "postcss-loader": "^8.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-hook-form": "^7.67.0",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.10.2",
+    "sass": "^1.94.2",
+    "sass-loader": "^16.0.6",
+    "style-loader": "^4.0.0",
+    "typescript": "^5.9.3",
+    "web-vitals": "^5.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
+    "eslint": "9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "typescript-eslint": "^8.48.1",
+    "webpack-cli": "^6.0.1"
+  }
+}
