@@ -31,6 +31,10 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Rename index.html to book.html
+        run: |
+          mv build/index.html build/book-react.html
+
       - name: Deploy to Hosting
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -38,3 +42,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: build/
+          dangerous-clean-slate: false
