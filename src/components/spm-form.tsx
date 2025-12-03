@@ -101,6 +101,15 @@ export const SpmForm = ({ prices }: SpmFormProps) => {
   return (
     <div className="ls section_padding_top_100 section_padding_bottom_75 columns_margin_bottom_30">
       <div className="container">
+        <div className="col-sm-12 text-center">
+          <div className="framed-heading">
+            <h2 className="section_header">BOOK ONLINE</h2>
+          </div>
+          <p>
+            Please fill out the following information for booking your move. We
+            look forward to being the best part of your move!
+          </p>
+        </div>
         {isSuccess ? (
           <SuccessMessage
             data={mapFormData(getValues(), result, prices.truckFee)}
