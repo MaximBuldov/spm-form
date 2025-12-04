@@ -13,8 +13,7 @@ class ConfigService {
       }
       const res = await $api.post<IConfigResponse>(url);
       return res.data;
-    } catch (e) {
-      console.log(e);
+    } catch (_) {
       throw new Error();
     }
   };

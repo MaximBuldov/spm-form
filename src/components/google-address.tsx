@@ -13,7 +13,6 @@ interface GoogleAutocompleteProps {
   name: FieldPath<IWork>;
   setZip: (zip?: string) => void;
   isDisabled: boolean;
-  index: number;
   register: UseFormRegister<IWork>;
 }
 
@@ -21,7 +20,6 @@ export const GoogleAutocomplete = ({
   name,
   setZip,
   isDisabled,
-  index,
   register
 }: GoogleAutocompleteProps) => {
   const [map, setMap] = useState<google.maps.places.Autocomplete | null>(null);

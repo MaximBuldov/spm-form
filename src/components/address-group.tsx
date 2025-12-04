@@ -59,7 +59,6 @@ export const AddressGroup = ({
             <GoogleAutocomplete
               isDisabled={isDisabled}
               register={register}
-              index={index}
               name={`${name}.${index}.full_address`}
               setZip={(zip?: string) => setZip(index, zip)}
             />

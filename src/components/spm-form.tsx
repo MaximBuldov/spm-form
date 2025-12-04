@@ -99,11 +99,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   }, [isWeekend, moversInt, payment, prices]);
 
   const onSubmit = (data: IWork) => {
-    console.log(
-      'result',
-      mapFormData(data, result, prices.truckFee, worker || data.author)
-    );
-    // mutate(mapFormData(data, result, prices.truckFee, worker));
+    mutate(mapFormData(data, result, prices.truckFee, worker));
   };
 
   return (
