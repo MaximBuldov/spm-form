@@ -48,6 +48,8 @@ export const MySelect = ({
             isClearable
             isDisabled={isDisabled}
             options={options}
+            value={options.find((opt) => opt.value === field.value) || null}
+            onChange={(opt) => field.onChange(opt?.value ?? '')}
             placeholder={placeholder}
           />
         )}

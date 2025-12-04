@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { AddressGroup, ErrorMessage, InputGroup, MySelect, Result } from '.';
-import { IPricesMapped } from '../models/config.module';
+import { IPricesMapped, IWork } from '../models/config.module';
 import { FormPayload, FormValues } from '../models/form.model';
 import { configService } from '../services/config.service';
 import {
@@ -19,12 +19,14 @@ import { SuccessMessage } from './success-message';
 
 interface SpmFormProps {
   prices: IPricesMapped;
+  work?: IWork | null | undefined;
 }
 
-export const SpmForm = ({ prices }: SpmFormProps) => {
+export const SpmForm = ({ prices, work }: SpmFormProps) => {
   const params = new URLSearchParams(window.location.search);
-  const work = params.get('work');
   const worker = params.get('worker');
+  const workId = params.get('work');
+
   const {
     register,
     handleSubmit,
@@ -49,6 +51,7 @@ export const SpmForm = ({ prices }: SpmFormProps) => {
     () => parseInt(movers?.value || '', 10),
     [movers?.value]
   );
+  console.log(bedroom);
   const payment = watch('payment');
   const date = watch('date');
   const showResult =
@@ -80,8 +83,8 @@ export const SpmForm = ({ prices }: SpmFormProps) => {
 
   const { isPending, mutate, isSuccess } = useMutation({
     mutationFn: (data: FormPayload) =>
-      work
-        ? configService.updateWork(data, work)
+      workId
+        ? configService.updateWork(data, workId)
         : configService.createWork(data)
   });
 
