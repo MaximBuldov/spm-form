@@ -1,13 +1,13 @@
-import { UseFormRegister } from 'react-hook-form';
-import { FormValues } from '../models/form.model';
+import { FieldPath, UseFormRegister } from 'react-hook-form';
+import { IWork } from '../models/form.model';
 import { ErrorMessage } from './error-message';
 
 interface InputGroupProps {
   prepend: string;
   append: string;
   error: boolean;
-  register: UseFormRegister<FormValues>;
-  name: keyof FormValues;
+  register: UseFormRegister<IWork>;
+  name: FieldPath<IWork>;
 }
 
 export const InputGroup = ({

@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { AddressGroup, ErrorMessage, InputGroup, MySelect, Result } from '.';
-import { IPricesMapped, IWork } from '../models/config.module';
-import { FormPayload, FormValues } from '../models/form.model';
+import { IPricesMapped } from '../models/config.module';
+import { IWork } from '../models/form.model';
 import { configService } from '../services/config.service';
 import {
   disableMovers,
@@ -35,24 +35,25 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     watch,
     setValue,
     getValues
-  } = useForm<FormValues>({
-    defaultValues: {
-      pickup_address: [{ street: '', zip: '', unit: '' }],
-      dropoff_address: [{ street: '', zip: '', unit: '' }]
+  } = useForm<IWork>({
+    defaultValues: work || {
+      acf: {
+        customer_info: {
+          pickup_address: [{ full_address: '', zip: '', unit: '' }],
+          dropoff_address: [{ full_address: '', zip: '', unit: '' }]
+        }
+      }
     }
   });
 
-  const bedroom = watch('bedroom');
-  const truck = watch('truck');
-  const time = watch('time');
-  const supplies = watch('supplies');
-  const movers = watch('movers');
-  const moversInt = useMemo(
-    () => parseInt(movers?.value || '', 10),
-    [movers?.value]
-  );
-  console.log(bedroom);
-  const payment = watch('payment');
+  const bedroom = watch('acf.customer_info.bedroom');
+  const truck = watch('acf.customer_info.truck');
+  const time = watch('acf.customer_info.time');
+  const supplies = watch('acf.customer_info.supplies');
+  const movers = watch('acf.customer_info.movers');
+  const moversInt = useMemo(() => parseInt(movers || '', 10), [movers]);
+
+  const payment = watch('acf.customer_info.payment');
   const date = watch('date');
   const showResult =
     bedroom &&
@@ -62,10 +63,10 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     movers &&
     payment &&
     date &&
-    watch('type_of_residency') &&
-    watch('packing') &&
-    watch('how_from') &&
-    watch('heavy_items');
+    watch('acf.customer_info.typeofresidency') &&
+    watch('acf.customer_info.packing') &&
+    watch('acf.customer_info.howfrom') &&
+    watch('acf.customer_info.heavyItems');
 
   const isWeekend = useMemo(() => {
     const day = dayjs(date).day();
@@ -82,7 +83,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   }, [isWeekend, moversInt, prices]);
 
   const { isPending, mutate, isSuccess } = useMutation({
-    mutationFn: (data: FormPayload) =>
+    mutationFn: (data: IWork) =>
       workId
         ? configService.updateWork(data, workId)
         : configService.createWork(data)
@@ -90,14 +91,14 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
 
   const result = useMemo(() => {
     return priceForHour({
-      isNonCash: payment?.value !== 'cash',
+      isNonCash: payment !== 'cash',
       movers: moversInt,
       ...prices,
       isWeekend
     });
-  }, [isWeekend, moversInt, payment?.value, prices]);
+  }, [isWeekend, moversInt, payment, prices]);
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: IWork) => {
     mutate(mapFormData(data, result, prices.truckFee, worker));
   };
 
@@ -126,27 +127,27 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.bedroom}
                 placeholder="Moving size"
-                name="bedroom"
-                isError={!!errors.bedroom}
+                name="acf.customer_info.bedroom"
+                isError={!!errors.acf?.customer_info?.bedroom}
                 control={control}
               />
             </div>
             <div className="col-md-4">
               <MySelect
-                options={disableTrucks(OPTIONS.truck, bedroom?.value)}
+                options={disableTrucks(OPTIONS.truck, bedroom)}
                 placeholder="Truck size"
-                name="truck"
-                isError={!!errors.truck}
+                name="acf.customer_info.truck"
+                isError={!!errors.acf?.customer_info?.truck}
                 control={control}
                 isDisabled={!bedroom}
               />
             </div>
             <div className="col-md-4">
               <MySelect
-                options={disableMovers(OPTIONS.movers, bedroom?.value)}
+                options={disableMovers(OPTIONS.movers, bedroom)}
                 placeholder="Crew size"
-                name="movers"
-                isError={!!errors.movers}
+                name="acf.customer_info.movers"
+                isError={!!errors.acf?.customer_info?.movers}
                 control={control}
                 isDisabled={!truck}
               />
@@ -167,8 +168,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.time}
                 placeholder="Start time"
-                name="time"
-                isError={!!errors.time}
+                name="acf.customer_info.time"
+                isError={!!errors.acf?.customer_info?.time}
                 control={control}
                 isDisabled={!truck}
               />
@@ -177,8 +178,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={paymentsOptions}
                 placeholder="Payment"
-                name="payment"
-                isError={!!errors.payment}
+                name="acf.customer_info.payment"
+                isError={!!errors.acf?.customer_info?.payment}
                 control={control}
                 isDisabled={!time}
               />
@@ -187,8 +188,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.residency}
                 placeholder="Type of residency"
-                name="type_of_residency"
-                isError={!!errors.type_of_residency}
+                name="acf.customer_info.typeofresidency"
+                isError={!!errors.acf?.customer_info?.typeofresidency}
                 control={control}
                 isDisabled={!time}
               />
@@ -197,8 +198,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.packing}
                 placeholder="No Packing"
-                name="packing"
-                isError={!!errors.packing}
+                name="acf.customer_info.packing"
+                isError={!!errors.acf?.customer_info?.packing}
                 control={control}
                 isDisabled={!time}
               />
@@ -207,39 +208,39 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.supplies}
                 placeholder="Do you need supplies?"
-                name="supplies"
-                isError={!!errors.supplies}
+                name="acf.customer_info.supplies"
+                isError={!!errors.acf?.customer_info?.supplies}
                 control={control}
                 isDisabled={!time}
               />
             </div>
-            {supplies?.value === 'yes' && (
+            {supplies === 'yes' && (
               <div className="row">
                 <div className="col-md-4">
                   <InputGroup
                     register={register}
-                    name="small_boxes"
+                    name="acf.customer_info.small_boxes"
                     prepend="Small Box"
                     append={`$${prices.smallBox}`}
-                    error={!!errors.small_boxes}
+                    error={!!errors.acf?.customer_info?.small_boxes}
                   />
                 </div>
                 <div className="col-md-4">
                   <InputGroup
                     register={register}
-                    name="medium_boxes"
+                    name="acf.customer_info.medium_boxes"
                     prepend="Medium boxes"
                     append={`$${prices.mediumBox}`}
-                    error={!!errors.medium_boxes}
+                    error={!!errors.acf?.customer_info?.medium_boxes}
                   />
                 </div>
                 <div className="col-md-4">
                   <InputGroup
                     register={register}
-                    name="wrapping_paper"
+                    name="acf.customer_info.wrapping_paper"
                     prepend="Wrapping paper"
                     append={`$${prices.wrappingPaper}`}
-                    error={!!errors.wrapping_paper}
+                    error={!!errors.acf?.customer_info?.wrapping_paper}
                   />
                 </div>
               </div>
@@ -248,8 +249,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.findUs}
                 placeholder="How did you find us?"
-                name="how_from"
-                isError={!!errors.how_from}
+                name="acf.customer_info.howfrom"
+                isError={!!errors.acf?.customer_info?.howfrom}
                 control={control}
                 isDisabled={!time}
               />
@@ -258,8 +259,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <MySelect
                 options={OPTIONS.heavyItems}
                 placeholder="Do you have Items more than 250lb?"
-                name="heavy_items"
-                isError={!!errors.heavy_items}
+                name="acf.customer_info.heavyItems"
+                isError={!!errors.acf?.customer_info?.heavyItems}
                 control={control}
                 isDisabled={!time}
               />
@@ -269,7 +270,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               <h3>Customer information</h3>
             </div>
             <AddressGroup
-              name="pickup_address"
+              name="acf.customer_info.pickup_address"
               title="Pick-Up Address"
               errors={errors}
               register={register}
@@ -278,7 +279,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
               setValue={setValue}
             />
             <AddressGroup
-              name="dropoff_address"
+              name="acf.customer_info.dropoff_address"
               title="Drop-off Address"
               errors={errors}
               register={register}
@@ -295,23 +296,23 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 type="text"
                 className="form-control"
                 placeholder="Full name"
-                {...register('customer.name', {
+                {...register('acf.customer_info.customer_name', {
                   required: true
                 })}
               />
-              {errors.customer?.name && <ErrorMessage />}
+              {errors.acf?.customer_info?.customer_name && <ErrorMessage />}
             </div>
             <div className="col-md-4">
               <input
                 disabled={!time}
                 type="text"
-                {...register('customer.phone', {
+                {...register('acf.customer_info.customer_phone', {
                   required: true
                 })}
                 className="form-control"
                 placeholder="Phone"
               />
-              {errors.customer?.phone && <ErrorMessage />}
+              {errors.acf?.customer_info?.customer_phone && <ErrorMessage />}
             </div>
             <div className="col-md-4">
               <input
@@ -319,11 +320,11 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 type="email"
                 className="form-control"
                 placeholder="Email"
-                {...register('customer.email', {
+                {...register('acf.customer_info.customer_email', {
                   required: true
                 })}
               />
-              {errors.customer?.email && <ErrorMessage />}
+              {errors.acf?.customer_info?.customer_email && <ErrorMessage />}
             </div>
             <div className="col-md-12">
               <h4>Contact person information (optional)</h4>
@@ -334,9 +335,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 type="text"
                 className="form-control"
                 placeholder="Full name"
-                {...register('contact_name')}
+                {...register('acf.customer_info.contact_name')}
               />
-              {errors.contact_name && <ErrorMessage />}
             </div>
             <div className="col-md-4">
               <input
@@ -344,9 +344,8 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 type="tel"
                 className="form-control"
                 placeholder="Phone"
-                {...register('contact_phone')}
+                {...register('acf.customer_info.contact_phone')}
               />
-              {errors.contact_phone && <ErrorMessage />}
             </div>
             <div className="col-md-4">
               <input
@@ -354,7 +353,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 type="email"
                 className="form-control"
                 placeholder="Email"
-                {...register('contact_email')}
+                {...register('acf.customer_info.contact_email')}
               />
             </div>
             <div className="col-md-12">
@@ -362,17 +361,17 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 disabled={!time}
                 rows={4}
                 className="form-control"
-                {...register('note')}
+                {...register('acf.customer_info.note')}
                 placeholder="Additional notes from customer (boxes/wrapping paper/bubble wrap/floor protection/items more than 250lb)"
               ></textarea>
             </div>
             {showResult && (
               <Result
-                movers={movers.value}
-                payment={payment.value}
-                smallBoxes={watch('small_boxes')}
-                mediumBoxes={watch('medium_boxes')}
-                wrappingPaper={watch('wrapping_paper')}
+                movers={movers}
+                payment={payment}
+                smallBoxes={watch('acf.customer_info.small_boxes')}
+                mediumBoxes={watch('acf.customer_info.medium_boxes')}
+                wrappingPaper={watch('acf.customer_info.wrapping_paper')}
                 prices={prices}
                 result={result}
               />

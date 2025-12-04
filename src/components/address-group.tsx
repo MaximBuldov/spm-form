@@ -1,22 +1,24 @@
 import {
   Control,
+  FieldArrayPath,
   FieldErrors,
+  get,
   useFieldArray,
   UseFormRegister,
   UseFormSetValue
 } from 'react-hook-form';
-import { AddressTypes, FormValues } from '../models/form.model';
+import { IWork } from '../models/form.model';
 import { ErrorMessage } from './error-message';
 import { GoogleAutocomplete } from './google-address';
 
 interface AddressGroupProps {
-  name: AddressTypes;
-  control?: Control<FormValues>;
+  name: FieldArrayPath<IWork>;
+  control?: Control<IWork>;
   title: string;
-  register: UseFormRegister<FormValues>;
-  errors: FieldErrors<FormValues>;
+  register: UseFormRegister<IWork>;
+  errors: FieldErrors<IWork>;
   isDisabled: boolean;
-  setValue: UseFormSetValue<FormValues>;
+  setValue: UseFormSetValue<IWork>;
 }
 
 export const AddressGroup = ({
@@ -45,7 +47,7 @@ export const AddressGroup = ({
             type="button"
             disabled={isDisabled}
             className="btn btn-success btn-sm"
-            onClick={() => append({ street: '', zip: '', unit: '' })}
+            onClick={() => append({ full_address: '', zip: '', unit: '' })}
           >
             {`+ Add ${title}`}
           </button>
@@ -58,10 +60,10 @@ export const AddressGroup = ({
               isDisabled={isDisabled}
               register={register}
               index={index}
-              name={name}
+              name={`${name}.${index}.full_address`}
               setZip={(zip?: string) => setZip(index, zip)}
             />
-            {errors[name]?.[index]?.street && <ErrorMessage />}
+            {get(errors, `${name}.${index}.full_address`) && <ErrorMessage />}
           </div>
           <div className="col-md-2">
             <input
@@ -82,7 +84,7 @@ export const AddressGroup = ({
                 required: true
               })}
             />
-            {errors[name]?.[index]?.zip && <ErrorMessage />}
+            {get(errors, `${name}.${index}.zip`) && <ErrorMessage />}
           </div>
           {index !== 0 && (
             <div className="col-md-1">

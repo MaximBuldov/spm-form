@@ -1,7 +1,10 @@
 import { Option } from '../models/form.model';
 import { setDisableOption } from './set-disable-options';
 
-export function disableMovers(moversOptions: Option[], bedroom?: string) {
+export function disableMovers(
+  moversOptions: Option[],
+  bedroom?: string | null
+) {
   let options: string[] = [];
 
   switch (bedroom) {

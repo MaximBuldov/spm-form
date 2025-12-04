@@ -1,7 +1,7 @@
 import { Option } from '../models/form.model';
 import { setDisableOption } from './set-disable-options';
 
-export function disableTrucks(truckOptions: Option[], bedroom?: string) {
+export function disableTrucks(truckOptions: Option[], bedroom?: string | null) {
   let options: string[] = [];
 
   switch (bedroom) {

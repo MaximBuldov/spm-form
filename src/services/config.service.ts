@@ -1,5 +1,5 @@
 import { IConfigResponse } from '../models/config.module';
-import { FormPayload } from '../models/form.model';
+import { IWork } from '../models/form.model';
 import { $api } from './http';
 
 class ConfigService {
@@ -19,13 +19,13 @@ class ConfigService {
     }
   };
 
-  async createWork(data: FormPayload) {
-    const res = await $api.post<FormPayload>('works', data);
+  async createWork(data: IWork) {
+    const res = await $api.post<IWork>('works', data);
     return res.data;
   }
 
-  async updateWork(data: FormPayload, workId: string) {
-    const res = await $api.patch<FormPayload>(`works/${workId}`, data);
+  async updateWork(data: IWork, workId: string) {
+    const res = await $api.patch<IWork>(`works/${workId}`, data);
     return res.data;
   }
 }

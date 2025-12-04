@@ -4,17 +4,17 @@ import {
   useJsApiLoader
 } from '@react-google-maps/api';
 import { useCallback, useState } from 'react';
-import { UseFormRegister } from 'react-hook-form';
-import { AddressTypes, FormValues } from '../models/form.model';
+import { FieldPath, UseFormRegister } from 'react-hook-form';
+import { IWork } from '../models/form.model';
 
 const libraries = ['places'] as Libraries;
 
 interface GoogleAutocompleteProps {
-  name: AddressTypes;
+  name: FieldPath<IWork>;
   setZip: (zip?: string) => void;
   isDisabled: boolean;
   index: number;
-  register: UseFormRegister<FormValues>;
+  register: UseFormRegister<IWork>;
 }
 
 export const GoogleAutocomplete = ({
@@ -70,7 +70,7 @@ export const GoogleAutocomplete = ({
         type="text"
         className="form-control"
         placeholder="Street"
-        {...register(`${name}.${index}.street`, {
+        {...register(name, {
           required: true
         })}
       />

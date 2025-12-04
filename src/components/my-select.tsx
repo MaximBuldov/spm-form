@@ -1,28 +1,14 @@
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath } from 'react-hook-form';
 import Select from 'react-select';
-import { FormValues, Option } from '../models/form.model';
+import { IWork, Option } from '../models/form.model';
 import { ErrorMessage } from './error-message';
-
-type Values = Pick<
-  FormValues,
-  | 'bedroom'
-  | 'truck'
-  | 'movers'
-  | 'time'
-  | 'payment'
-  | 'type_of_residency'
-  | 'packing'
-  | 'supplies'
-  | 'how_from'
-  | 'heavy_items'
->;
 
 interface MySelectProps {
   options: Option[];
   placeholder: string;
-  name: keyof Values;
+  name: FieldPath<IWork>;
   isError: boolean;
-  control?: Control<FormValues>;
+  control?: Control<IWork>;
   required?: boolean;
   isDisabled?: boolean;
 }
