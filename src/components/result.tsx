@@ -3,7 +3,7 @@ import { IPricesMapped } from '../models/config.module';
 interface ResultProps {
   movers: string;
   payment: string;
-  heavyItems?: number;
+  heavyItems?: boolean;
   smallBoxes?: number;
   mediumBoxes?: number;
   wrappingPaper?: number;
@@ -40,7 +40,7 @@ export const Result = ({
         <b>
           {' '}
           ${result}/h x 3 hours{' '}
-          {!!heavyItems && `+ $${heavyItems} for heavy items `}
+          {!!heavyItems && `+ $${prices?.heavyItems} for heavy items `}
           {!!smallBoxes &&
             `+ $${smallBoxesPrice} for ${smallBoxes} small boxes `}
           {!!mediumBoxes &&

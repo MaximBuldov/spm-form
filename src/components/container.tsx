@@ -7,9 +7,10 @@ import { SpmForm } from './spm-form';
 export const Container = () => {
   const params = new URLSearchParams(window.location.search);
   const work = params.get('work');
+  const token = params.get('token');
   const { data, isPending, isSuccess } = useQuery({
-    queryFn: () => configService.login(work),
-    queryKey: ['config', work]
+    queryFn: () => configService.login(work, token),
+    queryKey: ['config', work, token]
   });
 
   const mappedWork = useMemo(() => {

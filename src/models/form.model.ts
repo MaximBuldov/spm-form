@@ -9,6 +9,7 @@ export interface IWork {
   slug?: string;
   author?: number;
   date?: string;
+  status?: string;
   acf?: {
     customer_info: ICustomerInfo;
     date: string;

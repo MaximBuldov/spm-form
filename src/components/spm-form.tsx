@@ -2,11 +2,11 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { AddressGroup, ErrorMessage, InputGroup, MySelect, Result } from '.';
 import { IPricesMapped } from '../models/config.module';
 import { IWork } from '../models/form.model';
-import { configService } from '../services/config.service';
+import { Actions, configService } from '../services/config.service';
 import {
   disableMovers,
   disableTrucks,
@@ -51,10 +51,11 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   const time = watch('acf.customer_info.time');
   const supplies = watch('acf.customer_info.supplies');
   const movers = watch('acf.customer_info.movers');
+  const heavyItems = watch('acf.customer_info.heavyItems');
   const moversInt = useMemo(() => parseInt(movers || '', 10), [movers]);
 
   const payment = watch('acf.customer_info.payment');
-  const date = watch('date');
+  const date = watch('acf.date');
   const showResult =
     bedroom &&
     truck &&
@@ -66,7 +67,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     watch('acf.customer_info.typeofresidency') &&
     watch('acf.customer_info.packing') &&
     watch('acf.customer_info.howfrom') &&
-    watch('acf.customer_info.heavyItems');
+    heavyItems;
 
   const isWeekend = useMemo(() => {
     const day = dayjs(date).day();
@@ -84,9 +85,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
 
   const { isPending, mutate, isSuccess } = useMutation({
     mutationFn: (data: IWork) =>
-      workId
-        ? configService.updateWork(data, workId)
-        : configService.createWork(data)
+      configService.createWork(data, workId ? Actions.UPDATE : Actions.CREATE)
   });
 
   const result = useMemo(() => {
@@ -101,6 +100,14 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   const onSubmit = (data: IWork) => {
     mutate(mapFormData(data, result, prices.truckFee, worker));
   };
+
+  useEffect(() => {
+    if (supplies === 'no') {
+      setValue('acf.customer_info.small_boxes', 0);
+      setValue('acf.customer_info.medium_boxes', 0);
+      setValue('acf.customer_info.wrapping_paper', 0);
+    }
+  }, [setValue, supplies]);
 
   return (
     <div className="ls section_padding_top_100 section_padding_bottom_75 columns_margin_bottom_30">
@@ -372,6 +379,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 mediumBoxes={watch('acf.customer_info.medium_boxes')}
                 wrappingPaper={watch('acf.customer_info.wrapping_paper')}
                 prices={prices}
+                heavyItems={heavyItems !== 'No'}
                 result={result}
               />
             )}
