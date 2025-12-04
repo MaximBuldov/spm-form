@@ -99,7 +99,11 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   }, [isWeekend, moversInt, payment, prices]);
 
   const onSubmit = (data: IWork) => {
-    mutate(mapFormData(data, result, prices.truckFee, worker));
+    console.log(
+      'result',
+      mapFormData(data, result, prices.truckFee, worker || data.author)
+    );
+    // mutate(mapFormData(data, result, prices.truckFee, worker));
   };
 
   return (
@@ -119,7 +123,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
             data={mapFormData(getValues(), result, prices.truckFee)}
           />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="row">
+          <form onSubmit={handleSubmit(onSubmit)} className="row" noValidate>
             <div className="section-header col-md-12">
               <h3>Moving Information</h3>
             </div>
@@ -155,12 +159,11 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
             <div className="col-md-4">
               <input
                 disabled={!truck}
-                required
                 type="date"
                 className="form-control"
                 placeholder="Date"
                 min={dayjs().format('YYYY-MM-DD')}
-                {...register('date', { required: true })}
+                {...register('acf.date', { required: true })}
               />
               {errors.date && <ErrorMessage />}
             </div>

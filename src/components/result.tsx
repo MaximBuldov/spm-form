@@ -21,10 +21,10 @@ export const Result = ({
   prices,
   result
 }: ResultProps) => {
-  const smallBoxesPrice = Number(smallBoxes) * Number(prices?.smallBox);
-  const mediumBoxesPrice = Number(mediumBoxes) * Number(prices?.mediumBox);
+  const smallBoxesPrice = Number(smallBoxes || 0) * Number(prices?.smallBox);
+  const mediumBoxesPrice = Number(mediumBoxes || 0) * Number(prices?.mediumBox);
   const wrappingPaperPrice =
-    Number(wrappingPaper) * Number(prices?.wrappingPaper);
+    Number(wrappingPaper || 0) * Number(prices?.wrappingPaper);
 
   const total =
     Number(result) * 3 +

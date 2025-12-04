@@ -4,7 +4,7 @@ export function mapFormData(
   data: IWork,
   result: number,
   truckFee: number,
-  worker?: string | null
+  worker?: number | string | null
 ): IWork {
   if (data.acf?.customer_info) {
     data.acf.customer_info.result = String(result);

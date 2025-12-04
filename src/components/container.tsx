@@ -14,8 +14,8 @@ export const Container = () => {
 
   const mappedWork = useMemo(() => {
     const workObj = data?.work;
-    if (workObj?.date) {
-      workObj.date = dayjs(workObj.date).format('YYYY-MM-DD');
+    if (workObj?.acf) {
+      workObj.acf.date = dayjs(workObj.acf.date).format('YYYY-MM-DD');
     }
     return workObj;
   }, [data?.work]);
