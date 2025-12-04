@@ -34,9 +34,9 @@ export const SuccessMessage = (work: SuccessMessageProps) => {
         <li>Payment: {data.payment}</li>
         <li>Type of residency: {data.typeofresidency}</li>
         <li>Packing: {data.packing}</li>
-        {smallBox && <li>Small boxes: {smallBox}</li>}
-        {medBox && <li>Medium boxes: {medBox}</li>}
-        {papper && <li>Wrapping paper: {data.wrapping_paper}</li>}
+        {!!smallBox && <li>Small boxes: {smallBox}</li>}
+        {!!medBox && <li>Medium boxes: {medBox}</li>}
+        {!!papper && <li>Wrapping paper: {papper}</li>}
       </ul>
     </div>
   );
