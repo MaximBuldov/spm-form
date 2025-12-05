@@ -31,7 +31,8 @@ export const Result = ({
     Number(heavyItems ? prices?.heavyItems : 0) +
     smallBoxesPrice +
     mediumBoxesPrice +
-    wrappingPaperPrice;
+    wrappingPaperPrice +
+    (prices?.truckFee || 0);
   return (
     <div className="col-md-12 alert alert-primary p-3">
       <h4>Your minimum cost for 3 hours move: </h4>
@@ -39,7 +40,7 @@ export const Result = ({
         For 3 hours minimum with <b>{movers} crew</b>, with {payment} payment:
         <b>
           {' '}
-          ${result}/h x 3 hours{' '}
+          ${result}/h x 3 hours + ${prices?.truckFee} service fee{' '}
           {!!heavyItems && `+ $${prices?.heavyItems} for heavy items `}
           {!!smallBoxes &&
             `+ $${smallBoxesPrice} for ${smallBoxes} small boxes `}
