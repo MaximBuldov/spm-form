@@ -14,6 +14,7 @@ export interface IWork {
     customer_info: ICustomerInfo;
     date: string;
     state: IWorkState;
+    watched?: boolean;
   };
 }
 

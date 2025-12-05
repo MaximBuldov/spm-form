@@ -20,6 +20,7 @@ export function mapFormData(
       medium_boxes: +data.acf.customer_info.medium_boxes
     };
     data.acf.state = IWorkState.CONFIRMED;
+    data.acf.watched = true;
   }
   if (worker) {
     data.author = Number(worker);
