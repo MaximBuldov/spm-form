@@ -25,15 +25,13 @@ jobs:
         run: |
           echo "REACT_APP_API_URL=${{ vars.REACT_APP_API_URL }}" > .env.production.local
           echo "REACT_APP_GOOGLE_MAPS=${{ secrets.REACT_APP_GOOGLE_MAPS }}" >> .env.production.local
-          echo "REACT_APP_LOGIN=${{ secrets.REACT_APP_LOGIN }}" >> .env.production.local
-          echo "REACT_APP_PASSWORD=${{ secrets.REACT_APP_PASSWORD }}" >> .env.production.local
 
       - name: Build
         run: yarn build
 
       - name: Rename index.html to book.html
         run: |
-          mv build/index.html build/book-react.html
+          mv build/index.html build/book.html
 
       - name: Deploy to Hosting
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
