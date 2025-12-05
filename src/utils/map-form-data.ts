@@ -9,14 +9,16 @@ export function mapFormData(
   worker?: number | string | null
 ): IWork {
   if (data.acf?.customer_info) {
-    data.acf.customer_info.result = String(result);
-    data.acf.customer_info.truck_fee = String(truckFee);
-    data.acf.customer_info.customer_phone = normalizePhone(
-      data.acf.customer_info.customer_phone
-    );
-    data.acf.customer_info.contact_phone = normalizePhone(
-      data.acf.customer_info.contact_phone
-    );
+    data.acf.customer_info = {
+      ...data.acf.customer_info,
+      result: String(result),
+      truck_fee: String(truckFee),
+      customer_phone: normalizePhone(data.acf.customer_info.customer_phone),
+      contact_phone: normalizePhone(data.acf.customer_info.contact_phone),
+      wrapping_paper: +data.acf.customer_info.wrapping_paper,
+      small_boxes: +data.acf.customer_info.small_boxes,
+      medium_boxes: +data.acf.customer_info.medium_boxes
+    };
     data.acf.state = IWorkState.CONFIRMED;
   }
   if (worker) {
