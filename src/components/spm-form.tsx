@@ -15,6 +15,7 @@ import {
   priceForHour,
   setPaymentPrice
 } from '../utils';
+import { PaymentWrapper } from './payment-wrapper';
 import { SuccessMessage } from './success-message';
 
 interface SpmFormProps {
@@ -26,6 +27,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   const params = new URLSearchParams(window.location.search);
   const worker = params.get('worker');
   const workId = params.get('work');
+  const deposit = Number(work?.acf?.deposit || 0);
 
   const {
     register,
@@ -83,10 +85,23 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     });
   }, [isWeekend, moversInt, prices]);
 
-  const { isPending, mutate, isSuccess } = useMutation({
+  const { isPending, mutate, isSuccess, mutateAsync } = useMutation({
     mutationFn: (data: IWork) =>
       configService.createWork(data, workId ? Actions.UPDATE : Actions.CREATE)
   });
+
+  const createIntent = useMutation({
+    mutationFn: () =>
+      configService.createIntent(
+        work?.id,
+        work?.acf?.customer_info.customer_phone
+      )
+  });
+
+  const isNeedDeposit = useMemo(
+    () => !work?.acf?.paid && deposit > 0,
+    [deposit, work?.acf?.paid]
+  );
 
   const result = useMemo(() => {
     return priceForHour({
@@ -99,6 +114,18 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
 
   const onSubmit = (data: IWork) => {
     mutate(mapFormData(data, result, prices.truckFee, worker));
+  };
+
+  const updateWork = async () => {
+    const data = getValues();
+    await mutateAsync(
+      mapFormData(
+        data,
+        result,
+        Number(work?.acf?.customer_info.truck_fee || prices.truckFee),
+        worker
+      )
+    );
   };
 
   useEffect(() => {
@@ -385,20 +412,30 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
             )}
             <hr />
             <div className="col-md-12">
-              <button
-                disabled={isPending}
-                className="btn btn-primary btn-lg"
-                type="submit"
-              >
-                {isPending && (
-                  <span
-                    className="spinner-border spinner-border-sm me-3"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Submit
-              </button>
+              {createIntent.isSuccess ? (
+                <PaymentWrapper
+                  clientSecret={createIntent.data.clientSecret}
+                  updateWork={updateWork}
+                />
+              ) : (
+                <button
+                  disabled={isPending || createIntent.isPending}
+                  className="btn btn-primary btn-lg"
+                  type={isNeedDeposit ? 'button' : 'submit'}
+                  onClick={() => {
+                    isNeedDeposit && createIntent.mutate();
+                  }}
+                >
+                  {(isPending || createIntent.isPending) && (
+                    <span
+                      className="spinner-border spinner-border-sm me-3"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  {isNeedDeposit ? `Pay $${deposit} and submit` : 'Submit'}
+                </button>
+              )}
             </div>
           </form>
         )}

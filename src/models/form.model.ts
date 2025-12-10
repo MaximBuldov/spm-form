@@ -15,6 +15,8 @@ export interface IWork {
     date: string;
     state: IWorkState;
     watched?: boolean;
+    paid?: boolean;
+    deposit?: string;
   };
 }
 
@@ -43,6 +45,13 @@ export interface ICustomerInfo {
   truck_fee: string;
   typeofresidency: string;
   wrapping_paper: number;
+}
+
+export interface IIntent {
+  amount: number;
+  clientSecret: string;
+  currency: string;
+  workId: number;
 }
 
 export enum IWorkState {

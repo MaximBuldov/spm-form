@@ -1,11 +1,12 @@
 import { IConfigResponse } from '../models/config.module';
-import { IWork } from '../models/form.model';
+import { IIntent, IWork } from '../models/form.model';
 import { $api } from './http';
 
 export enum Actions {
   PRICES = 'prices',
   CREATE = 'create_work',
-  UPDATE = 'update_work'
+  UPDATE = 'update_work',
+  INTENT = 'create_intent'
 }
 
 class ConfigService {
@@ -30,6 +31,23 @@ class ConfigService {
         params: { action }
       });
       return res.data;
+    } catch (_) {
+      throw new Error();
+    }
+  };
+
+  createIntent = async (work?: number, token?: string) => {
+    try {
+      if (work && token) {
+        const res = await $api.post<IIntent>(
+          this.link,
+          { work, token },
+          { params: { action: Actions.INTENT } }
+        );
+        return res.data;
+      } else {
+        throw new Error('Wrong data');
+      }
     } catch (_) {
       throw new Error();
     }
