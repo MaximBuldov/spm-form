@@ -25,6 +25,7 @@ jobs:
         run: |
           echo "REACT_APP_API_URL=${{ vars.REACT_APP_API_URL }}" > .env.production.local
           echo "REACT_APP_GOOGLE_MAPS=${{ secrets.REACT_APP_GOOGLE_MAPS }}" >> .env.production.local
+          echo "REACT_APP_STRIPE_PK=${{ secrets.REACT_APP_STRIPE_PK }}" >> .env.production.local
 
       - name: Build
         run: yarn build
