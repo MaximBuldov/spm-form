@@ -19,7 +19,6 @@ export const PaymentForm = ({ updateWork }: PaymentFormProps) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
-
     if (!stripe || !elements) {
       return;
     }
