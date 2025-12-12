@@ -21,6 +21,7 @@ export function mapFormData(
     };
     data.acf.state = IWorkState.CONFIRMED;
     data.acf.watched = true;
+    data.acf.revision_author = '1';
   }
   if (worker) {
     data.author = Number(worker);
