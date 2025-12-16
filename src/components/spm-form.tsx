@@ -55,7 +55,6 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   const movers = watch('acf.customer_info.movers');
   const heavyItems = watch('acf.customer_info.heavyItems');
   const moversInt = useMemo(() => parseInt(movers || '', 10), [movers]);
-
   const payment = watch('acf.customer_info.payment');
   const date = watch('acf.date');
   const showResult =
