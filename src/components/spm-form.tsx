@@ -412,6 +412,15 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 />
               )}
               <hr />
+              {isNeedDeposit && (
+                <div className="col-md-12 alert alert-secondary">
+                  Submit your deposit securely to reserve your crew, truck, and
+                  exact time slot on our schedule. This payment simply holds
+                  your booking and is fully refundable as long as you contact us
+                  at least 24 hours before your scheduled moving date to make
+                  changes or cancel.
+                </div>
+              )}
               <div className="col-md-12">
                 {!createIntent.isSuccess && (
                   <button

@@ -17,7 +17,6 @@ export interface IWork {
     watched?: boolean;
     paid?: boolean;
     deposit?: string;
-    revision_author?: string;
   };
 }
 
