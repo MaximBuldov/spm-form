@@ -6,7 +6,8 @@ export function mapFormData(
   data: IWork,
   result: number,
   truckFee: number,
-  worker?: number | string | null
+  worker?: number | string | null,
+  defaultDeposit?: string | null
 ): IWork {
   if (data.acf?.customer_info) {
     data.acf.customer_info = {
@@ -19,7 +20,9 @@ export function mapFormData(
       small_boxes: +data.acf.customer_info.small_boxes,
       medium_boxes: +data.acf.customer_info.medium_boxes
     };
-    data.acf.state = IWorkState.CONFIRMED;
+    data.acf.state = !defaultDeposit
+      ? IWorkState.CONFIRMED
+      : IWorkState.PENDING;
     data.acf.watched = true;
   }
   if (worker) {

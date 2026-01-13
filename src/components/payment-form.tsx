@@ -4,9 +4,10 @@ import {
   useStripe
 } from '@stripe/react-stripe-js';
 import { FormEvent, useState } from 'react';
+import { IWork } from '../models/form.model';
 
 interface PaymentFormProps {
-  updateWork: () => Promise<void>;
+  updateWork: () => Promise<IWork>;
 }
 
 export const PaymentForm = ({ updateWork }: PaymentFormProps) => {

@@ -16,6 +16,7 @@ export interface IPricesMapped {
   wrappingPaper: number;
   heavyItems: number;
   truckFee: number;
+  defaultdeposit: number;
 }
 
 export interface IOptions {

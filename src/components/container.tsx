@@ -28,7 +28,7 @@ export const Container = () => {
       </div>
     </div>
   ) : isSuccess ? (
-    <SpmForm prices={data.prices} work={mappedWork} />
+    <SpmForm prices={data.prices} defaultWork={mappedWork} />
   ) : (
     <div className="alert alert-danger" role="alert">
       Something went wrong. We’re sorry for the inconvenience. Please try again

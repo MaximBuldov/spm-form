@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AddressGroup, ErrorMessage, InputGroup, MySelect, Result } from '.';
 import { IPricesMapped } from '../models/config.module';
 import { IWork } from '../models/form.model';
@@ -20,13 +20,17 @@ import { SuccessMessage } from './success-message';
 
 interface SpmFormProps {
   prices: IPricesMapped;
-  work?: IWork | null | undefined;
+  defaultWork?: IWork | null | undefined;
 }
 
-export const SpmForm = ({ prices, work }: SpmFormProps) => {
+export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
+  const [work, setDefaultWork] = useState(defaultWork);
+  const [isSuccess, setSuccess] = useState(false);
   const params = new URLSearchParams(window.location.search);
+  const url = new URL(window.location.href);
   const worker = params.get('worker');
   const workId = params.get('work');
+  const defaultDeposit = params.get('deposit');
   const deposit = Number(work?.acf?.deposit || 0);
 
   const {
@@ -36,8 +40,10 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     formState: { errors },
     watch,
     setValue,
-    getValues
+    getValues,
+    trigger
   } = useForm<IWork>({
+    mode: 'onChange',
     defaultValues: work || {
       acf: {
         customer_info: {
@@ -84,9 +90,14 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
     });
   }, [isWeekend, moversInt, prices]);
 
-  const { isPending, mutate, isSuccess, mutateAsync } = useMutation({
+  const { isPending, mutate, mutateAsync } = useMutation({
     mutationFn: (data: IWork) =>
-      configService.createWork(data, workId ? Actions.UPDATE : Actions.CREATE)
+      configService.createWork(data, workId ? Actions.UPDATE : Actions.CREATE),
+    onSuccess: () => {
+      if (!defaultDeposit) {
+        setSuccess(true);
+      }
+    }
   });
 
   const createIntent = useMutation({
@@ -98,8 +109,10 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
   });
 
   const isNeedDeposit = useMemo(
-    () => !work?.acf?.paid && deposit > 0,
-    [deposit, work?.acf?.paid]
+    () =>
+      (!work?.acf?.paid && deposit > 0) ||
+      (defaultDeposit && prices.defaultdeposit > 0),
+    [defaultDeposit, deposit, prices.defaultdeposit, work?.acf?.paid]
   );
 
   const result = useMemo(() => {
@@ -117,12 +130,16 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
 
   const updateWork = async () => {
     const data = getValues();
-    await mutateAsync(
+    if (data.acf && defaultDeposit) {
+      data.acf.deposit = prices.defaultdeposit.toString();
+    }
+    return await mutateAsync(
       mapFormData(
         data,
         result,
         Number(work?.acf?.customer_info.truck_fee || prices.truckFee),
-        worker
+        worker,
+        defaultDeposit
       )
     );
   };
@@ -187,6 +204,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                 />
               </div>
               <div className="col-md-4">
+                <label htmlFor="date">Date</label>
                 <input
                   disabled={!truck}
                   type="date"
@@ -195,7 +213,7 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                   min={dayjs().format('YYYY-MM-DD')}
                   {...register('acf.date', { required: true })}
                 />
-                {errors.date && <ErrorMessage />}
+                {errors.acf?.date && <ErrorMessage />}
               </div>
               <div className="col-md-4">
                 <MySelect
@@ -426,8 +444,24 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                     disabled={isPending || createIntent.isPending}
                     className="btn btn-primary btn-lg"
                     type={isNeedDeposit ? 'button' : 'submit'}
-                    onClick={() => {
-                      isNeedDeposit && createIntent.mutate();
+                    onClick={async () => {
+                      const isValid = await trigger();
+                      if (isNeedDeposit && isValid) {
+                        if (defaultDeposit) {
+                          const res = await updateWork();
+                          if (res.id) {
+                            setDefaultWork(res);
+                            url.searchParams.set('work', res.id.toString());
+                            url.searchParams.delete('deposit');
+                            window.history.replaceState(
+                              null,
+                              '',
+                              url.toString()
+                            );
+                          }
+                        }
+                        createIntent.mutate();
+                      }
                     }}
                   >
                     {(isPending || createIntent.isPending) && (
@@ -437,7 +471,9 @@ export const SpmForm = ({ prices, work }: SpmFormProps) => {
                         aria-hidden="true"
                       ></span>
                     )}
-                    {isNeedDeposit ? `Pay $${deposit} and submit` : 'Submit'}
+                    {isNeedDeposit
+                      ? `Pay $${deposit || prices.defaultdeposit} and submit`
+                      : 'Submit'}
                   </button>
                 )}
               </div>
