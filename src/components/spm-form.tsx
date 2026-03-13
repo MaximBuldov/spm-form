@@ -57,6 +57,7 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   const bedroom = watch('acf.customer_info.bedroom');
   const truck = watch('acf.customer_info.truck');
   const time = watch('acf.customer_info.time');
+  const end_time = watch('acf.customer_info.end_time');
   const supplies = watch('acf.customer_info.supplies');
   const movers = watch('acf.customer_info.movers');
   const heavyItems = watch('acf.customer_info.heavyItems');
@@ -75,6 +76,16 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
     watch('acf.customer_info.packing') &&
     watch('acf.customer_info.howfrom') &&
     heavyItems;
+
+  const isMoreThenHour = useMemo(() => {
+    const toMinutes = (time = '0') => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const diff = Math.abs(toMinutes(end_time) - toMinutes(time));
+    return diff > 60;
+  }, [end_time, time]);
 
   const isWeekend = useMemo(() => {
     const day = dayjs(date).day();
@@ -152,6 +163,11 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
     }
   }, [setValue, supplies]);
 
+  const formatTime = (time = '00:00') => {
+    const d = dayjs(`2000-01-01 ${time}`);
+    return d.format('ha');
+  };
+
   return (
     <div className="ls section_padding_top_100 section_padding_bottom_75 columns_margin_bottom_30">
       <div className="container">
@@ -216,14 +232,24 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
                 {errors.acf?.date && <ErrorMessage />}
               </div>
               <div className="col-md-4">
-                <MySelect
-                  options={OPTIONS.time}
-                  placeholder="Start time"
-                  name="acf.customer_info.time"
-                  isError={!!errors.acf?.customer_info?.time}
-                  control={control}
-                  isDisabled={!truck}
-                />
+                {isMoreThenHour ? (
+                  <input
+                    disabled
+                    type="text"
+                    className="form-control"
+                    placeholder="Time"
+                    value={`From ${formatTime(time)} to ${formatTime(end_time)}`}
+                  />
+                ) : (
+                  <MySelect
+                    options={OPTIONS.time}
+                    placeholder="Start time"
+                    name="acf.customer_info.time"
+                    isError={!!errors.acf?.customer_info?.time}
+                    control={control}
+                    isDisabled={!truck}
+                  />
+                )}
               </div>
               <div className="col-md-4">
                 <MySelect

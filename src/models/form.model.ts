@@ -41,6 +41,7 @@ export interface ICustomerInfo {
   small_boxes: number;
   supplies: string;
   time: string;
+  end_time: string;
   truck: string;
   truck_fee: string;
   typeofresidency: string;
