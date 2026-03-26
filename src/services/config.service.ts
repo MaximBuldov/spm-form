@@ -10,15 +10,14 @@ export enum Actions {
 }
 
 class ConfigService {
-  private link = 'book.php';
+  private link = '/wp-json/spm/v1';
 
   login = async (work?: string | null, token?: string | null) => {
     try {
-      const res = await $api.post<IConfigResponse>(
-        this.link,
-        { work, token },
-        { params: { action: 'prices' } }
-      );
+      const res = await $api.post<IConfigResponse>(`${this.link}/prices`, {
+        work,
+        token
+      });
       return res.data;
     } catch (_) {
       throw new Error();
@@ -27,9 +26,7 @@ class ConfigService {
 
   createWork = async (data: IWork, action: Actions) => {
     try {
-      const res = await $api.post<IWork>(this.link, data, {
-        params: { action }
-      });
+      const res = await $api.post<IWork>(`${this.link}/${action}`, data);
       return res.data;
     } catch (_) {
       throw new Error();
@@ -39,11 +36,10 @@ class ConfigService {
   createIntent = async (work?: number, token?: string) => {
     try {
       if (work && token) {
-        const res = await $api.post<IIntent>(
-          this.link,
-          { work, token },
-          { params: { action: Actions.INTENT } }
-        );
+        const res = await $api.post<IIntent>(`${this.link}/${Actions.INTENT}`, {
+          work,
+          token
+        });
         return res.data;
       } else {
         throw new Error('Wrong data');
