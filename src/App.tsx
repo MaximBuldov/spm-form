@@ -8,7 +8,7 @@ const queryClient = new QueryClient();
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Container />;
+      <Container />
     </QueryClientProvider>
   );
 };
