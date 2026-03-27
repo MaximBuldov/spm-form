@@ -217,15 +217,17 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
                 />
               </div>
               <div className="col-md-4">
-                <label htmlFor="date">Date</label>
-                <input
-                  disabled={!truck}
-                  type="date"
-                  className="form-control"
-                  placeholder="Date"
-                  min={dayjs().format('YYYY-MM-DD')}
-                  {...register('acf.date', { required: true })}
-                />
+                <div className="input-group">
+                  <span className="input-group-text">Date</span>
+                  <input
+                    disabled={!truck}
+                    type="date"
+                    className="form-control"
+                    placeholder="Date"
+                    min={dayjs().format('YYYY-MM-DD')}
+                    {...register('acf.date', { required: true })}
+                  />
+                </div>
                 {errors.acf?.date && <ErrorMessage />}
               </div>
               <div className="col-md-4">
