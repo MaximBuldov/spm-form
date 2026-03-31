@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AddressGroup, ErrorMessage, InputGroup, MySelect, Result } from '.';
 import { IPricesMapped } from '../models/config.module';
 import { IWork } from '../models/form.model';
@@ -26,6 +26,7 @@ interface SpmFormProps {
 export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   const [work, setDefaultWork] = useState(defaultWork);
   const [isSuccess, setSuccess] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const params = new URLSearchParams(window.location.search);
   const url = new URL(window.location.href);
   const worker = params.get('worker');
@@ -106,6 +107,10 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
       configService.createWork(data, workId ? Actions.UPDATE : Actions.CREATE),
     onSuccess: () => {
       if (!defaultDeposit) {
+        containerRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
         setSuccess(true);
       }
     }
@@ -169,7 +174,10 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   };
 
   return (
-    <div className="ls section_padding_top_100 section_padding_bottom_75 columns_margin_bottom_30">
+    <div
+      ref={containerRef}
+      className="ls section_padding_top_100 section_padding_bottom_75 columns_margin_bottom_30"
+    >
       <div className="container">
         <div className="col-sm-12 text-center">
           <p>
