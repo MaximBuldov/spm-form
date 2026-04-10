@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useForm } from 'react-hook-form';
+import { FieldErrors, useForm } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -10,6 +10,7 @@ import { Actions, configService } from '../services/config.service';
 import {
   disableMovers,
   disableTrucks,
+  flattenErrors,
   mapFormData,
   OPTIONS,
   priceForHour,
@@ -173,6 +174,22 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
     return d.format('ha');
   };
 
+  const onError = (errors?: FieldErrors<IWork>) => {
+    if (errors) {
+      const [firstErrorPath] = flattenErrors(errors);
+      if (!firstErrorPath) {
+        return;
+      }
+
+      const escapedPath = firstErrorPath.replace(/\./g, '\\.');
+      const el = document.querySelector<HTMLElement>(`[name="${escapedPath}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+      }
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -191,7 +208,11 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
           />
         ) : (
           <>
-            <form onSubmit={handleSubmit(onSubmit)} className="row" noValidate>
+            <form
+              onSubmit={handleSubmit(onSubmit, onError)}
+              className="row"
+              noValidate
+            >
               <div className="section-header col-md-12">
                 <h3>Moving Information</h3>
               </div>
