@@ -8,15 +8,17 @@ const stripe = loadStripe(process.env.REACT_APP_STRIPE_PK as string);
 interface PaymentWrapperProps {
   clientSecret: string;
   updateWork: () => Promise<IWork>;
+  customerEmail?: string;
 }
 
 export const PaymentWrapper = ({
   clientSecret,
-  updateWork
+  updateWork,
+  customerEmail
 }: PaymentWrapperProps) => {
   return (
     <Elements stripe={stripe} options={{ clientSecret }}>
-      <PaymentForm updateWork={updateWork} />
+      <PaymentForm updateWork={updateWork} customerEmail={customerEmail} />
     </Elements>
   );
 };

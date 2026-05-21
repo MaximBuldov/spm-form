@@ -65,6 +65,7 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   const heavyItems = watch('acf.customer_info.heavyItems');
   const moversInt = useMemo(() => parseInt(movers || '', 10), [movers]);
   const payment = watch('acf.customer_info.payment');
+  const customerEmail = watch('acf.customer_info.customer_email');
   const date = watch('acf.date');
   const showResult =
     bedroom &&
@@ -180,12 +181,15 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
       if (!firstErrorPath) {
         return;
       }
-
-      const escapedPath = firstErrorPath.replace(/\./g, '\\.');
-      const el = document.querySelector<HTMLElement>(`[name="${escapedPath}"]`);
+      const el = document.querySelector<HTMLElement>(
+        `[name="${firstErrorPath}"]`
+      );
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.focus();
+        const target = el.offsetParent !== null ? el : (el.parentElement ?? el);
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (
+          target.querySelector<HTMLElement>('input:not([type="hidden"])') ?? el
+        ).focus();
       }
     }
   };
@@ -500,6 +504,10 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
                     type={isNeedDeposit ? 'button' : 'submit'}
                     onClick={async () => {
                       const isValid = await trigger();
+                      if (!isValid) {
+                        onError(errors);
+                        return;
+                      }
                       if (isNeedDeposit && isValid) {
                         if (defaultDeposit) {
                           const res = await updateWork();
@@ -536,6 +544,7 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
               <PaymentWrapper
                 clientSecret={createIntent.data.clientSecret}
                 updateWork={updateWork}
+                customerEmail={customerEmail}
               />
             )}
           </>

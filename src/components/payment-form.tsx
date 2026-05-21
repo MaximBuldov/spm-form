@@ -8,9 +8,13 @@ import { IWork } from '../models/form.model';
 
 interface PaymentFormProps {
   updateWork: () => Promise<IWork>;
+  customerEmail?: string;
 }
 
-export const PaymentForm = ({ updateWork }: PaymentFormProps) => {
+export const PaymentForm = ({
+  updateWork,
+  customerEmail
+}: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -26,6 +30,7 @@ export const PaymentForm = ({ updateWork }: PaymentFormProps) => {
 
     const { error } = await stripe.confirmPayment({
       elements,
+      confirmParams: { receipt_email: customerEmail },
       redirect: 'if_required'
     });
 
