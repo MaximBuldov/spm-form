@@ -27,6 +27,7 @@ interface SpmFormProps {
 export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   const [work, setDefaultWork] = useState(defaultWork);
   const [isSuccess, setSuccess] = useState(false);
+  const [policyAgreed, setPolicyAgreed] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const params = new URLSearchParams(window.location.search);
   const url = new URL(window.location.href);
@@ -496,10 +497,33 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
                   changes or cancel.
                 </div>
               )}
+              <div className="col-md-12 mb-3">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="policyAgreed"
+                    checked={policyAgreed}
+                    onChange={(e) => setPolicyAgreed(e.target.checked)}
+                  />
+                  <label className="form-check-label" htmlFor="policyAgreed">
+                    I have read and agree to the{' '}
+                    <a
+                      href="https://smartpeoplemoving.com/policy/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Terms & Conditions
+                    </a>
+                  </label>
+                </div>
+              </div>
               <div className="col-md-12">
                 {!createIntent.isSuccess && (
                   <button
-                    disabled={isPending || createIntent.isPending}
+                    disabled={
+                      isPending || createIntent.isPending || !policyAgreed
+                    }
                     className="btn btn-primary btn-lg"
                     type={isNeedDeposit ? 'button' : 'submit'}
                     onClick={async () => {
