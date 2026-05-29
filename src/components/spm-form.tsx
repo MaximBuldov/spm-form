@@ -144,7 +144,10 @@ export const SpmForm = ({ prices, defaultWork }: SpmFormProps) => {
   }, [isWeekend, moversInt, payment, prices]);
 
   const onSubmit = (data: IWork) => {
-    mutate(mapFormData(data, result, prices.truckFee, worker));
+    const truckFee = Number(
+      work?.acf?.customer_info.truck_fee || prices.truckFee
+    );
+    mutate(mapFormData(data, result, truckFee, worker));
   };
 
   const updateWork = async () => {
